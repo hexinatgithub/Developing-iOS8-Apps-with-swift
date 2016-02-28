@@ -314,16 +314,59 @@ import Foundation
 //var b = 0 as Double
 //print(b)
 
-var a = [1, 2, 3]
-a.replaceRange(0...1, with: [6, 7, 8, 9])
-print("\(a)")
+// var a = [1, 2, 3]
+// a.replaceRange(0...1, with: [6, 7, 8, 9])
+// print("\(a)")
 
+//class A {
+//	func sayHello() {
+//		print("a")
+//	}
+//}
+//
+//class B: A {
+//	override func sayHello() {
+//		print("b")
+//	}
+//}
+//
+//var a = A()
+//var b = B()
+//var array = [a, b]
+//for item in array {
+//	item.sayHello()
+//}
 
+var array = Array<Int?>(count: 7, repeatedValue: nil)
 
+var c = NSCondition()
 
+dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+    var a = 0
+    c.lock()
+    array[0] = a
+    print("\(array[0])")
+    c.signal()
+    c.unlock()
+}
 
+for i in 1..<7 {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+        var a = i
+        c.lock()
+        while array[i-1] == nil {
+            c.wait()
+        }
+        array[i] = a
+        print("\(array[i])")
+        c.signal()
+        c.unlock()
+    }
+}
 
-
+while true {
+    
+}
 
 
 

@@ -8,6 +8,19 @@
 
 import MapKit
 
+class EditableWaypoint: GPX.Waypoint {
+    override var coordinate: CLLocationCoordinate2D {
+        get { return super.coordinate }
+        set {
+            latitude = newValue.latitude
+            longitude = newValue.longitude
+        }
+    }
+    
+    override var thumbnailURL: NSURL? { return links.first?.url }
+    override var imageURL: NSURL? { return links.first?.url }
+}
+
 extension GPX.Waypoint: MKAnnotation {
     var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -17,7 +30,6 @@ extension GPX.Waypoint: MKAnnotation {
     
     var thumbnailURL: NSURL? { return getImageURLofType("thumbnail") }
     var imageURL: NSURL? { return getImageURLofType("large") }
-    
     private func getImageURLofType(type: String) -> NSURL? {
         for link in links {
             if link.type == type {
